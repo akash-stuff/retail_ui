@@ -1,0 +1,610 @@
+/* ===========================================================
+   Design tokens — "Counter Stamp" system
+   A checkout-counter loyalty stamp/ticket aesthetic:
+   deep teal-ink, warm paper, gold foil accent, mono digits
+   for numbers (like an LED price display), geometric sans
+   for everything else.
+   =========================================================== */
+:root {
+  --ink: #142b2e;
+  --ink-soft: #24444a;
+  --paper: #faf7f0;
+  --paper-dim: #efe9db;
+  --gold: #e8a33d;
+  --gold-deep: #c67f1f;
+  --teal-bright: #2f9e8f;
+  --coral: #e85d4a;
+  --line: rgba(20, 43, 46, 0.14);
+
+  --font-display: 'IBM Plex Mono', 'Courier New', monospace;
+  --font-body: 'Manrope', system-ui, -apple-system, sans-serif;
+
+  --radius-sm: 6px;
+  --radius-md: 14px;
+  --shadow-card: 0 10px 30px rgba(20, 43, 46, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background: var(--paper);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font-family: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+/* ===========================================================
+   Shared layout
+   =========================================================== */
+.page-shell {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.brandbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.brandbar-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--gold);
+  flex-shrink: 0;
+}
+
+.brandbar-label {
+  font-family: var(--font-display);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+/* ===========================================================
+   Claim page — the customer-facing check-in form
+   =========================================================== */
+.claim-wrap {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 28px 16px 60px;
+}
+
+.claim-card {
+  width: 100%;
+  max-width: 420px;
+}
+
+.claim-eyebrow {
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  margin: 0 0 6px;
+}
+
+.claim-title {
+  font-size: 26px;
+  font-weight: 800;
+  margin: 0 0 6px;
+  line-height: 1.15;
+}
+
+.claim-subtitle {
+  font-size: 14.5px;
+  color: var(--ink-soft);
+  margin: 0 0 26px;
+  line-height: 1.5;
+}
+
+.field-group {
+  margin-bottom: 16px;
+}
+
+.field-label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  margin-bottom: 6px;
+  letter-spacing: 0.01em;
+}
+
+.field-label .optional {
+  font-weight: 400;
+  color: #8a9a9c;
+  text-transform: none;
+}
+
+.field-input,
+.field-textarea {
+  width: 100%;
+  padding: 13px 14px;
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  font-size: 16px; /* prevents iOS zoom-on-focus */
+  color: var(--ink);
+  font-family: var(--font-body);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.field-input:focus,
+.field-textarea:focus {
+  outline: none;
+  border-color: var(--teal-bright);
+  box-shadow: 0 0 0 3px rgba(47, 158, 143, 0.18);
+}
+
+.field-textarea {
+  resize: vertical;
+  min-height: 78px;
+}
+
+.field-error {
+  color: var(--coral);
+  font-size: 13px;
+  margin: -8px 0 16px;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 15px 18px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 15.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.1s ease, background 0.15s ease;
+  margin-top: 6px;
+}
+
+.submit-btn:hover:not(:disabled) {
+  background: var(--ink-soft);
+}
+
+.submit-btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.form-banner {
+  background: #fff4e2;
+  border: 1px solid #f0d9ad;
+  color: var(--gold-deep);
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 13.5px;
+  margin-bottom: 18px;
+}
+
+.form-banner.error {
+  background: #fdeceb;
+  border-color: #f4c3bb;
+  color: var(--coral);
+}
+
+/* ===========================================================
+   Success / discount reveal — the signature "ticket stub"
+   =========================================================== */
+.ticket {
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  animation: ticket-drop 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes ticket-drop {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.ticket-top {
+  padding: 30px 26px 22px;
+  text-align: center;
+  position: relative;
+}
+
+.ticket-emoji {
+  font-size: 34px;
+  margin-bottom: 4px;
+}
+
+.ticket-headline {
+  font-family: var(--font-display);
+  font-size: 12.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0 0 10px;
+}
+
+.ticket-discount {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 68px;
+  line-height: 1;
+  margin: 0;
+  color: var(--paper);
+  letter-spacing: -0.02em;
+}
+
+.ticket-discount span {
+  font-size: 30px;
+  vertical-align: super;
+  color: var(--gold);
+}
+
+.ticket-off-label {
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  color: rgba(250, 247, 240, 0.65);
+  margin-top: 4px;
+}
+
+/* perforated tear edge between the two ticket halves */
+.ticket-perf {
+  position: relative;
+  height: 0;
+  border-top: 2px dashed rgba(250, 247, 240, 0.28);
+  margin: 0 0;
+}
+
+.ticket-perf::before,
+.ticket-perf::after {
+  content: '';
+  position: absolute;
+  top: -10px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--paper);
+}
+
+.ticket-perf::before {
+  left: -10px;
+}
+
+.ticket-perf::after {
+  right: -10px;
+}
+
+.ticket-bottom {
+  padding: 22px 26px 26px;
+  background: rgba(250, 247, 240, 0.04);
+}
+
+.ticket-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 7px 0;
+  font-size: 14px;
+  border-bottom: 1px dotted rgba(250, 247, 240, 0.16);
+}
+
+.ticket-row:last-of-type {
+  border-bottom: none;
+}
+
+.ticket-row-label {
+  color: rgba(250, 247, 240, 0.55);
+}
+
+.ticket-row-value {
+  font-weight: 700;
+  font-family: var(--font-display);
+}
+
+.ticket-instruction {
+  margin-top: 18px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--gold);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.ticket-timestamp {
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 12px;
+  color: rgba(250, 247, 240, 0.45);
+  margin-top: 4px;
+}
+
+.ticket-again-btn {
+  display: block;
+  width: 100%;
+  margin-top: 20px;
+  padding: 12px;
+  background: transparent;
+  border: 1.5px solid rgba(250, 247, 240, 0.3);
+  color: var(--paper);
+  border-radius: var(--radius-sm);
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ticket-again-btn:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+/* ===========================================================
+   Admin dashboard
+   =========================================================== */
+.admin-login-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.admin-login-card {
+  width: 100%;
+  max-width: 360px;
+  text-align: center;
+}
+
+.admin-login-card .field-input {
+  text-align: center;
+  letter-spacing: 0.3em;
+  font-family: var(--font-display);
+}
+
+.admin-shell {
+  flex: 1;
+  padding: 24px 28px 60px;
+  max-width: 1280px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.admin-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.admin-title {
+  font-size: 22px;
+  font-weight: 800;
+  margin: 0;
+}
+
+.admin-subtitle {
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  margin: 4px 0 0;
+}
+
+.admin-controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.admin-search {
+  padding: 10px 14px;
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  min-width: 220px;
+  background: #fff;
+}
+
+.admin-search:focus {
+  outline: none;
+  border-color: var(--teal-bright);
+}
+
+.admin-btn {
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--line);
+  background: #fff;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.admin-btn:hover {
+  border-color: var(--ink);
+}
+
+.admin-btn.primary {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+.admin-btn.primary:hover {
+  background: var(--ink-soft);
+}
+
+.admin-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.admin-stats {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.stat-chip {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 12px 18px;
+  min-width: 130px;
+}
+
+.stat-chip-value {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.stat-chip-label {
+  font-size: 12px;
+  color: var(--ink-soft);
+  margin-top: 2px;
+}
+
+.table-wrap {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  overflow: auto;
+  box-shadow: var(--shadow-card);
+}
+
+table.customers-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+  min-width: 900px;
+}
+
+.customers-table thead th {
+  text-align: left;
+  padding: 13px 16px;
+  background: var(--paper-dim);
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  position: sticky;
+  top: 0;
+  white-space: nowrap;
+}
+
+.customers-table tbody td {
+  padding: 13px 16px;
+  border-top: 1px solid var(--line);
+  vertical-align: top;
+}
+
+.customers-table tbody tr:hover {
+  background: #fbf9f3;
+}
+
+.pill {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 12.5px;
+}
+
+.pill-visit {
+  background: rgba(47, 158, 143, 0.14);
+  color: #1d6b60;
+}
+
+.pill-discount {
+  background: rgba(232, 163, 61, 0.18);
+  color: var(--gold-deep);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--ink-soft);
+}
+
+.loading-row {
+  padding: 40px;
+  text-align: center;
+  color: var(--ink-soft);
+  font-family: var(--font-display);
+  font-size: 13px;
+}
+
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid rgba(250, 247, 240, 0.4);
+  border-top-color: var(--paper);
+  border-radius: 50%;
+  display: inline-block;
+  animation: spin 0.7s linear infinite;
+  vertical-align: middle;
+}
+
+.spinner.dark {
+  border: 2.5px solid rgba(20, 43, 46, 0.2);
+  border-top-color: var(--ink);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 720px) {
+  .admin-shell {
+    padding: 18px 14px 50px;
+  }
+  .admin-header {
+    align-items: flex-start;
+  }
+}
