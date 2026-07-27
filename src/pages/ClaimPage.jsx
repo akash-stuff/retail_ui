@@ -88,7 +88,7 @@ export default function ClaimPage() {
                     className="field-input"
                     type="text"
                     autoComplete="name"
-                    placeholder="e.g. Priya Sharma"
+                    placeholder="e.g. Your Name"
                     value={form.name}
                     onChange={handleChange}
                   />
@@ -105,7 +105,7 @@ export default function ClaimPage() {
                     type="tel"
                     inputMode="tel"
                     autoComplete="tel"
-                    placeholder="e.g. 98765 43210"
+                    placeholder="e.g. 0123456789"
                     value={form.mobile}
                     onChange={handleChange}
                   />
@@ -113,7 +113,7 @@ export default function ClaimPage() {
 
                 <div className="field-group">
                   <label className="field-label" htmlFor="email">
-                    Email <span className="optional">(optional)</span>
+                    Email <span className="optional"></span>
                   </label>
                   <input
                     id="email"
@@ -121,7 +121,7 @@ export default function ClaimPage() {
                     className="field-input"
                     type="email"
                     autoComplete="email"
-                    placeholder="e.g. priya@email.com"
+                    placeholder="e.g. yourname@gmail.com"
                     value={form.email}
                     onChange={handleChange}
                   />
